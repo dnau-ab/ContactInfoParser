@@ -57,6 +57,9 @@ Phone: 4105551234
 Email: john.doe@entegrasystems.com
 ```
 
+To change the location the program looks for resources (firstNames.csv, lastNames.csv):
+Edit the resourcesDir variable in BusinessCardParser.cs to the desired directory.
+
 ## How it Works
 
 1. A file is opened and all of its contents are read

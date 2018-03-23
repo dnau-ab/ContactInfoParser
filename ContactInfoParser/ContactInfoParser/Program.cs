@@ -19,7 +19,8 @@ namespace ContactInfoParser
             // if file given to read
             if (args.Length > 0)
             {
-                try {
+                try
+                {
                     String contents = File.ReadAllText(args[0]);
                     contacts.Add(parser.getContactInfo(contents));
 
@@ -32,38 +33,51 @@ namespace ContactInfoParser
                         Console.WriteLine("Phone: " + contact.getPhoneNumber());
                         Console.WriteLine("Email: " + contact.getEmailAddress() + "\n");
                     }
-                } catch(FileNotFoundException e)
+                }
+                catch (FileNotFoundException e)
                 {
                     Console.WriteLine("Could not find file: " + args[0]);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
             else // no file to read, do tests instead
             {
+                String testsDir = "../../Tests";
                 // fetch all test file paths from test directory
-                String[] testFiles = Directory.GetFiles("../../Tests", "*.txt");
-
-                foreach (String file in testFiles)
+                try
                 {
-                    String contents = File.ReadAllText(file);
-                    contacts.Add(parser.getContactInfo(contents));
-                    Console.WriteLine("Looking for contacts in '" + file + "'");
+                    String[] testFiles = Directory.GetFiles("../../Tests", "*.txt");
+
+
+                    foreach (String file in testFiles)
+                    {
+                        String contents = File.ReadAllText(file);
+                        contacts.Add(parser.getContactInfo(contents));
+                        Console.WriteLine("Looking for contacts in '" + file + "'");
+                    }
+                    Console.WriteLine();
+
+                    // Output the contact information for each read
+                    foreach (ContactInfo contact in contacts)
+                    {
+                        Console.WriteLine("Name: " + contact.getName());
+                        Console.WriteLine("Phone: " + contact.getPhoneNumber());
+                        Console.WriteLine("Email: " + contact.getEmailAddress() + "\n");
+                    }
+
                 }
-                Console.WriteLine();
-
-                // Output the contact information for each read
-                foreach (ContactInfo contact in contacts)
+                catch (DirectoryNotFoundException e)
                 {
-                    Console.WriteLine("Name: " + contact.getName());
-                    Console.WriteLine("Phone: " + contact.getPhoneNumber());
-                    Console.WriteLine("Email: " + contact.getEmailAddress() + "\n");
+                    Console.WriteLine("Tests directory '" + testsDir + "' was not found. Terminating.");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
                 }
             }
-
-
-            
 
         }
     }

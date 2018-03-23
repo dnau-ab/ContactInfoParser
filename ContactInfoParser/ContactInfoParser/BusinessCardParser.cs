@@ -12,18 +12,25 @@ namespace ContactInfoParser {
         private static HashSet<String> firstNames;
         private static HashSet<String> lastNames;
 
+        // where to look for resources (eg. firstNames.csv, lastNames.csv)
+        private String resourceDir = @"..\..\Resources\";
+
         public BusinessCardParser()
         {
             try
             {
                 // if name dictionaries not initialized, init them
                 if (firstNames == null)
-                    firstNames = new HashSet<String>(File.ReadAllLines(@"..\..\Resources\firstNames.csv"));
+                    firstNames = new HashSet<String>(File.ReadAllLines(resourceDir + "firstNames.csv"));
                 if (lastNames == null)
-                    lastNames = new HashSet<String>(File.ReadAllLines(@"..\..\Resources\lastNames.csv"));
+                    lastNames = new HashSet<String>(File.ReadAllLines(resourceDir + "lastNames.csv"));
             } catch (Exception e)
             {
                 // unable to find or open name data files
+                if (firstNames == null)
+                    Console.WriteLine("Could not find firstNames.csv in resource directory '" + resourceDir + "'");
+                if (lastNames == null)
+                    Console.WriteLine("Could not find lastNames.csv in resource directory '" + resourceDir + "'");
             }
         }
 
@@ -76,10 +83,10 @@ namespace ContactInfoParser {
                 uint score = 0;
                 if (fullName.Length >= 2) { // first [middle?] last
                     // check last name
-                    if (lastNames.Contains(fullName[fullName.Length-1]))
+                    if (lastNames != null && lastNames.Contains(fullName[fullName.Length-1]))
                         score += 2;
                     // check first name
-                    if (firstNames.Contains(fullName[0]))
+                    if (firstNames != null && firstNames.Contains(fullName[0]))
                         score += 1;
 
                     return new KeyValuePair<String, uint>( name.Value, score);
