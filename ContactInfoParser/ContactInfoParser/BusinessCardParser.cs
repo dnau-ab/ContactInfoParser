@@ -82,9 +82,23 @@ namespace ContactInfoParser {
                 String[] fullName = name.Value.Split(' ');
                 uint score = 0;
                 if (fullName.Length >= 2) { // first [middle?] last
-                    // check last name
-                    if (lastNames != null && lastNames.Contains(fullName[fullName.Length-1]))
-                        score += 2;
+                    // if last name is hyphenated
+                    if (fullName[fullName.Length - 1].Contains('-'))
+                    {
+                        // check both hyphenated names
+                        // if one is valid, +2 points
+                        //Console.WriteLine(fullName[fullName.Length - 1].Substring(0, fullName[fullName.Length - 1].IndexOf('-')));
+                        //Console.WriteLine(fullName[fullName.Length - 1].Substring(fullName[fullName.Length - 1].IndexOf('-') + 1, (fullName[fullName.Length - 1].Length - fullName[fullName.Length - 1].IndexOf('-')) - 1));
+                        if (lastNames != null && (lastNames.Contains(fullName[fullName.Length - 1].Substring(0, fullName[fullName.Length - 1].IndexOf('-'))) 
+                            || lastNames.Contains(fullName[fullName.Length - 1].Substring(fullName[fullName.Length - 1].IndexOf('-') + 1, (fullName[fullName.Length - 1].Length - fullName[fullName.Length - 1].IndexOf('-')) - 1)))) {
+                            score += 2;
+                        }
+
+                    } else { // non-hyphenated last name
+                        // check last name
+                        if (lastNames != null && lastNames.Contains(fullName[fullName.Length - 1]))
+                            score += 2;
+                    }
                     // check first name
                     if (firstNames != null && firstNames.Contains(fullName[0]))
                         score += 1;
