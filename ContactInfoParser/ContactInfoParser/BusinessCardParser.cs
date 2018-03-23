@@ -14,11 +14,17 @@ namespace ContactInfoParser {
 
         public BusinessCardParser()
         {
-            // if name dictionaries not initialized, init them
-            if (firstNames == null)
-                firstNames = new HashSet<String>(File.ReadAllLines(@"..\..\Resources\firstNames.csv"));
-            if (lastNames == null)
-                lastNames = new HashSet<String>(File.ReadAllLines(@"..\..\Resources\lastNames.csv"));
+            try
+            {
+                // if name dictionaries not initialized, init them
+                if (firstNames == null)
+                    firstNames = new HashSet<String>(File.ReadAllLines(@"..\..\Resources\firstNames.csv"));
+                if (lastNames == null)
+                    lastNames = new HashSet<String>(File.ReadAllLines(@"..\..\Resources\lastNames.csv"));
+            } catch (Exception e)
+            {
+                // unable to find or open name data files
+            }
         }
 
         public ContactInfo getContactInfo(String document) {
@@ -88,6 +94,10 @@ namespace ContactInfoParser {
         // Returns a phone number found in the given input or empty string
         private String findPhoneNumber(String input)
         {
+            input = input.ToLower();
+            if (input.Contains("fax"))  // ignore any fax numbers
+                return String.Empty;
+
             // try to find a phone number in the input
             Match phone = Regex.Match(input, Patterns.phone);
 
