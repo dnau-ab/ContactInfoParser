@@ -19,11 +19,26 @@ namespace ContactInfoParser {
         {
             try
             {
+                String[] lines;
                 // if name dictionaries not initialized, init them
                 if (firstNames == null)
-                    firstNames = new HashSet<String>(File.ReadAllLines(resourceDir + "firstNames.csv"));
+                {
+                    lines = File.ReadAllLines(resourceDir + "firstNames.csv");
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        lines[i] = lines[i].ToLower();
+                    }
+                    firstNames = new HashSet<String>(lines);
+                }
                 if (lastNames == null)
-                    lastNames = new HashSet<String>(File.ReadAllLines(resourceDir + "lastNames.csv"));
+                {
+                    lines = File.ReadAllLines(resourceDir + "lastNames.csv");
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        lines[i] = lines[i].ToLower();
+                    }
+                    lastNames = new HashSet<String>(lines);
+                }
             } catch (Exception e)
             {
                 // unable to find or open name data files
@@ -79,7 +94,8 @@ namespace ContactInfoParser {
             // if there is a potential name, check to see if it is in the dictionary
             if (name.Value != String.Empty)
             {
-                String[] fullName = name.Value.Split(' ');
+                // Make name lowercase to handle cases such as "MacNaughton" vs "Macnaughton"
+                String[] fullName = name.Value.ToLower().Split(' ');
                 uint score = 0;
                 if (fullName.Length >= 2) { // first [middle?] last
                     // if last name is hyphenated
